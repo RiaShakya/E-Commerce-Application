@@ -18,8 +18,10 @@ class ProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // IMAGE & BADGES SECTION
           Stack(
             children: [
+              // 1. The Image Background
               Container(
                 height: 140,
                 width: double.infinity,
@@ -31,6 +33,8 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // 2. SALE Badge (Moved back to Top-Left)
               Positioned(
                 top: 8,
                 left: 8,
@@ -46,16 +50,24 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // 3. Favorite Button (Top-Right)
               Positioned(
                 top: 0,
                 right: 0,
                 child: IconButton(
-                  icon: const Icon(Icons.favorite_border, color: Colors.redAccent),
-                  onPressed: () {},
+                  icon: const Icon(Icons.favorite_border, color: Colors.white),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${product.name} added to wishlist!'), duration: const Duration(seconds: 2)),
+                    );
+                  },
                 ),
               ),
             ],
           ),
+
+          // DETAILS & BUTTONS SECTION
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -69,23 +81,43 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '\$${product.price.toStringAsFixed(2)}',
+                  'Rs. ${product.price.toStringAsFixed(2)}',
                   style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${product.name} added to cart!'), duration: const Duration(seconds: 2)),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+
+                // 4. Buttons Row (Add to Cart + Share)
+                Row(
+                  children: [
+                    // Expanded makes the Add to Cart button take up the remaining space
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${product.name} added to cart!'), duration: const Duration(seconds: 2)),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 8), // Keeps button height balanced
+                        ),
+                        child: const Text("Add to Cart"),
+                      ),
                     ),
-                    child: const Text("Add to Cart"),
-                  ),
+
+                    // Share Button sits on the right side
+                    IconButton(
+                      icon: const Icon(Icons.share, color: Colors.blueGrey, size: 20),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Sharing ${product.name}...'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
